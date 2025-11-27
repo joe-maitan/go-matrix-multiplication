@@ -135,28 +135,28 @@ func main() {
 	b.GenerateMatrix()
 	b.Transpose()
 
-	// c := Matrix{
-	// 	Data: make([][]int, matrixSize), 
-	// 	Size: matrixSize, 
-	// 	Name: "c",
-	// }
+	c := Matrix{
+		Data: make([][]int, matrixSize), 
+		Size: matrixSize, 
+		Name: "c",
+	}
 
-	// c.GenerateMatrix()
+	c.GenerateMatrix()
 
-	// d := Matrix{
-	// 	Data: make([][]int, matrixSize), 
-	// 	Size: matrixSize, 
-	// 	Name: "d",
-	// }
+	d := Matrix{
+		Data: make([][]int, matrixSize), 
+		Size: matrixSize, 
+		Name: "d",
+	}
 
-	// d.GenerateMatrix()
-	// d.Transpose()
+	d.GenerateMatrix()
+	d.Transpose()
 
-	fmt.Println(a.String())
-	fmt.Println(b.String())
+	// fmt.Println(a.String())
+	// fmt.Println(b.String())
 	
 	x := QueueJobs(&a, &b)
-	// y := QueueJobs(&c, &d)
+	y := QueueJobs(&c, &d)
 	
 	var wg sync.WaitGroup
     start := time.Now()
@@ -169,46 +169,46 @@ func main() {
     }
 
 	wg.Wait()
-	fmt.Println(x.String())
+	// fmt.Println(x.String())
 	fin := time.Now()
 	elapsed := fin.Sub(start)
 	grandTotal += elapsed
 	fmt.Printf("Calculation of X (Product of A and B) complete. Time to compute matrix %v\n", elapsed)
 
-	// start = time.Now()
-	// for i := 0; i < numCores; i++ {
-    //     wg.Add(1)
-    //     go func(workerID int) {
-	// 		y.Multiply()
-    //         defer wg.Done()
-    //     }(i)
-    // }
+	start = time.Now()
+	for i := 0; i < numCores; i++ {
+        wg.Add(1)
+        go func(workerID int) {
+			y.Multiply()
+            defer wg.Done()
+        }(i)
+    }
 	
-	// wg.Wait()
+	wg.Wait()
     
-	// fin = time.Now()
-	// elapsed = fin.Sub(start)
-	// grandTotal += elapsed
-    // fmt.Printf("Calculation of Y (Product of C and D) complete. Time to compute matrix %v\n", elapsed)
+	fin = time.Now()
+	elapsed = fin.Sub(start)
+	grandTotal += elapsed
+    fmt.Printf("Calculation of Y (Product of C and D) complete. Time to compute matrix %v\n", elapsed)
    
-	// y.Transpose()
+	y.Transpose()
 	
-	// z := QueueJobs(&x, &y)
-	// start = time.Now()
-	// for i := 0; i < numCores; i++ {
-    //     wg.Add(1)
-    //     go func(workerID int) {
-    //         z.Multiply()
-	// 		defer wg.Done()
-    //     }(i)
-    // }
+	z := QueueJobs(&x, &y)
+	start = time.Now()
+	for i := 0; i < numCores; i++ {
+        wg.Add(1)
+        go func(workerID int) {
+            z.Multiply()
+			defer wg.Done()
+        }(i)
+    }
 	
-	// wg.Wait()
+	wg.Wait()
 	
-	// fin = time.Now()
-	// elapsed = fin.Sub(start)
-	// grandTotal += elapsed
-    // fmt.Printf("Calculation of Z (Product of X and Y) complete. Time to compute matrix %v\n", elapsed)
+	fin = time.Now()
+	elapsed = fin.Sub(start)
+	grandTotal += elapsed
+    fmt.Printf("Calculation of Z (Product of X and Y) complete. Time to compute matrix %v\n", elapsed)
 
 	fmt.Printf("Finished! Total time taken = %v\n", grandTotal)
 } // End main() func

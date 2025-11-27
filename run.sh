@@ -3,6 +3,6 @@
 go clean
 go build
 
-./matrix-multiplication 3
+./matrix-multiplication 3000
 
 # go clean
